@@ -1,0 +1,106 @@
+<% include ../partials/_header.ejs %>
+  <body class="">
+    <div class="page">
+      <div class="page-main">
+    
+      
+        <% include ../partials/_topbar.ejs %>
+        <% include ../partials/_navbar.ejs %>
+        <div class="my-3 my-md-5">
+        
+          <div class="container">
+              <% include ../partials/_messages.ejs %>
+          <div class="row row-card">
+              
+                <form action="/interview/invite/<%= id %>" method="post" class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Invite candidate</h3>
+                  </div>
+                  <div class="card-body">
+    
+                    <div class='col-lg-6'>
+                      <fieldset class="form-fieldset">
+                        <div class="form-group">
+                          <label class="form-label">First name<span class="form-required">*</span></label>
+                          <input type="text"  id="fname" name="fname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Last name<span class="form-required">*</span></label>
+                          <input type="text" id="lname" name="lname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Email<span class="form-required">*</span></label>
+                          <input type="email"  id="email" name="email"  class="form-control">
+                        </div>
+
+                        
+                        <div class="form-group mb-0">
+                          <label class="form-label">Cell number</label>
+                          <input type="tel"id="cell" name="cell" class="form-control">
+                        </div>
+                        
+
+                      </fieldset>
+                    </div>
+
+                    <!--end cardbody-->
+                  </div>
+                  <div class="card-footer text-right">
+                      <div class="d-flex">
+                        <a href="javascript:history.back()" class="btn btn-link">Cancel</a>
+                        <button id="btnSend" type="submit" class="btn btn-primary ml-auto">Invite</button>
+                      </div>
+                    </div>
+                  </form>
+              </div>  
+              
+              
+
+
+              <div class="row row-card">
+                <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Candidates </h3>
+                    </div>  
+              <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Candidate Name</th>
+                      <th>Candidate Email</th>
+                      <th>Finished</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% candidates.forEach(function(c) { %>
+                      <% if(c) { %>
+                      <tr>
+                          <td><%= c.first_name %> <%= c.last_name %>  </td>
+                          <td><%= c.email %> </td>
+                          <td><%= c.finished %> </td>
+                      </tr>
+                      <% }%>
+                      <% }); %>
+              
+                  </tbody>
+                </table>
+              </div>
+            
+  
+          </div>
+        </div>
+
+
+
+
+        </div>
+
+
+
+        </div>
+      </div>
+     <!-- <% include ../partials/_footer_header.ejs %>-->
+      <% include ../partials/_footer.ejs %>
+    </div>
+  </body>
+</html>

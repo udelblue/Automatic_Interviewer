@@ -1,0 +1,61 @@
+<% include ../partials/_header.ejs %>
+<script src="/static/DetectRTC.js"></script>
+
+<script>
+  // detect
+
+  var checkBrowser = function() {
+  DetectRTC.load(function() {
+  if(DetectRTC.hasWebcam === false || DetectRTC.hasMicrophone === false){
+      window.location.replace("/interview/unable");
+  }
+
+  navigator.mediaDevices.getUserMedia({
+          audio : true,
+          video : true
+        }).then(function(stream) {
+    
+            if(DetectRTC.isWebsiteHasWebcamPermissions === false || DetectRTC.isWebsiteHasMicrophonePermissions === false){
+                console.log("no Permission")
+                $(".checklink").show();
+                $(".interviewlink").hide();
+
+            }else{
+              console.log("Permission")
+              $(".checklink").hide();
+              $(".interviewlink").show();
+            }
+        })
+
+  // if(DetectRTC.isWebsiteHasWebcamPermissions === false){}
+    // if(DetectRTC.isWebsiteHasMicrophonePermissions === false){}
+    // DetectRTC.osName
+    // DetectRTC.osVersion
+  // DetectRTC.isWebsiteHasMicrophonePermissions
+  // console.log(DetectRTC.videoInputDevices);
+  });
+}
+
+checkBrowser();
+
+</script>
+
+  <body class="">
+    <div class="page">
+      <div class="page-content">
+        <div class="container text-center">
+            <div class="display-1 text-muted mb-5"> Grant site camera and microphone access</div>
+            <h2 class="h2 mb-3">Your browser or device does support capture video and/or audio</h2>
+            <p class="h4 text-muted font-weight-normal mb-7">Please access interview from device that allows video and audio&hellip;</p>
+          <a class="btn btn-primary interviewlink" style="display: none;" href="<%= root_url %><%= url %>">
+            <i class="fe fe-play-circle mr-2"></i>  Start Interview 
+          </a>
+
+          <a class="btn btn-primary checklink" style="display: none;" href="#" onclick="checkBrowser(); return false" >
+            <i class="fe fe-check-circle mr-2"></i>  Check Device 
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

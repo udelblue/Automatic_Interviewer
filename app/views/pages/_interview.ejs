@@ -1,0 +1,219 @@
+<% include ../partials/_header.ejs %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/static/DetectRTC.js"></script>
+<body class="">
+  <div class="page">
+    <div class="page-main">
+      <div class="my-3 my-md-5">
+          <div class="col-12">
+            <div class="row row-cards">
+                <div class="col-sm-6 col-lg-6">
+                  <div class="card p-3"> 
+                    <div class="row px-3">
+                      <h3 id="question" class="lead"></h3>
+                    </div>
+                    <div class="row px-3">
+                      <p id="questionCount" class=""  ></p>
+                      <button class="btn btn-primary btn-block mb-2 questionStartBtn" > Start Interview </button>
+                    </div>
+                    <div class="row px-3">
+                      <p id="countDown" class="" ></p>
+                    </div>
+
+                  </div>
+                </div>
+  
+                <div class="col-sm-6 col-lg-6">
+                  <div class="card p-3">
+                    <div id="area_response_video" class="embed-responsive embed-responsive-16by9">
+                      <video  id="response_video" class="embed-responsive-item" autoplay muted>
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+                </div>
+  
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+      <div id="interview" class="d-none" ><%= JSON.stringify(interview)  %></div> 
+      <div id="candidate" class="d-none" ><%= JSON.stringify(candidate)  %></div> 
+
+    </div>
+    <% include ../partials/_footer.ejs %>
+  </div>
+
+  <script>
+    // detect
+    DetectRTC.load(function() {
+    if(DetectRTC.hasWebcam === false || DetectRTC.hasMicrophone === false){
+      window.location.replace("/interview/unable");
+    }else{
+      
+    }
+   
+   // if(DetectRTC.isWebsiteHasWebcamPermissions === false){
+    // DetectRTC.osName
+    // DetectRTC.osVersion
+   // DetectRTC.isWebsiteHasMicrophonePermissions
+   // console.log(DetectRTC.videoInputDevices);
+  });
+  </script>
+  <script>
+    var dataURL = "/api/response";
+    var questionURL = "/api/interview/question";
+    var finishedURL = "/interview/finished";
+    var unableURL = "/interview/unable";
+    //start recording
+    var  recorder, liveStream ,  liveVideo , elemQuestionCount ;	    	  	
+    var strobj =  document.getElementById('interview').textContent; 
+    var qObj = JSON.parse(strobj);
+    var strobjcan =  document.getElementById('candidate').textContent; 
+    var qObjcan = JSON.parse(strobjcan);
+    
+    var candidateID =  qObjcan._id;
+    var qObjCQindex = 0
+    var qObjCQcurrentquestionID = qObj.questions[qObjCQindex];
+    var qObjCQtotalcount = qObj.questions.length
+    
+    var questionLength = qObjCQtotalcount;
+    var questionIndex = qObjCQindex; 
+    var initCountDownTime = qObj.start_time;
+    var start_button = $(".questionStartBtn");
+    var questionCurrent = {};
+    
+    //send video
+    function sendRecording(e) {
+      var formData = new FormData();
+    
+      formData.append("candidateID", candidateID);
+      formData.append("questionID", questionIndex );
+      formData.append("jobID", qObj._id);
+      formData.append("currentInterview", qObj);
+      formData.append("currentQuestion", 	questionCurrent);
+      var content = e.data;
+      var blob = new Blob([ content ], {
+        type : "video/webm"
+      });
+     formData.append("f", blob);
+      var request = new XMLHttpRequest();
+
+      request.open("POST", dataURL);
+      request.send(formData);
+    }
+    
+    function onRecordingReady(e) {
+      sendRecording(e);
+      //console.log(e.data);
+    }	   
+    
+    window.onload = function() {
+      //set current and count dom
+      elemQuestionCount = document.getElementById('questionCount');
+      elemQuestionCount.innerHTML = (questionIndex + 1 )  + ' out of ' + questionLength;
+        
+      //countdown 
+      var timerId;
+      var countDown = function (timeLeft){
+        //recording started
+        recorder = new MediaRecorder(liveStream);
+        recorder.addEventListener('dataavailable', onRecordingReady);
+        recorder.start();
+        
+        //get timer id
+        var elem = document.getElementById('countDown');
+        timerId = setInterval(countdown, 1000 );
+        function countdown() {
+          if (timeLeft == 0) {
+          elem.innerHTML = 0 + ' seconds remaining';
+          //countdown finished clear timer
+          clearTimeout(timerId);
+          //stop recorder
+          recorder.stop();
+          questionIndex = (questionIndex + 1);
+            if(questionIndex  === questionLength){
+              var ljobID = qObj._id;
+              $('#question').html("<label>"+ "  " + "</label")	
+              $(location).attr('href', finishedURL + '?cid=' + candidateID + '&jid=' + ljobID) 
+            }
+            else{
+              //update question count
+              elemQuestionCount.innerHTML = ( questionIndex + 1 ) + ' out of ' + questionLength;
+              //getQuestionAPI(qObj.questions[questionIndex], qObj.jobID);
+              getQuestionAPI(questionIndex, qObj._id);
+            }
+          } else {
+            elem.innerHTML = timeLeft + ' seconds remaining';
+            timeLeft--;
+          }
+        }
+      }
+      
+      var  getQuestionAPI = function(id, jid) {
+        // get next question
+         $.ajax({url: questionURL + "?id=" + id + "&jid=" + jid, success: function(result){
+                questionCurrent = result;
+                $('#question').html("<label>"+ result.question + "</label")
+                countDown(result.duration);
+            }});	 
+        }
+      
+      var start = function (){
+        // get video & audio stream from user
+        navigator.mediaDevices.getUserMedia({
+          audio : true,
+          video : true
+        }).then(function(stream) {
+          liveStream = stream;
+          liveVideo = document.getElementById('response_video');
+          // Don't do this
+          //liveVideo.src = URL.createObjectURL(stream);
+          // Do this
+          liveVideo.srcObject = stream;
+          liveVideo.play();
+        })
+      .catch(function(err) {
+      /* handle the error */
+        $(location).attr('href', unableURL + '?cid=' + candidateID + '&jid=' + qObj.jobID) 
+      });
+      } 	 
+      //countdown 
+      var shorttimerId;
+      var shortCountDown = function (timeLeft){
+        start_button.hide();
+        var elem = document.getElementById('countDown');
+        shorttimerId = setInterval(shortcountdown, 1000);
+        function shortcountdown() {
+          if (timeLeft == 0) {
+          elem.innerHTML = 'Interview starting in ' + 0 + ' seconds.';
+          clearTimeout(shorttimerId);	
+          $("#questionCount").show();
+          //	getQuestionAPI(qObj.questions[questionIndex], qObj.jobID);
+          getQuestionAPI(questionIndex, qObj._id);
+          } else {
+            elem.innerHTML = 'Interview starting in ' + timeLeft + ' seconds.' ;
+            timeLeft--;
+          }
+        }
+    
+      }
+      start();
+      if(initCountDownTime !== 0){
+      shortCountDown(initCountDownTime);	 //count down
+      }
+    
+    //man start
+      $(start_button).click(function(){
+          shortCountDown(0);
+      });
+    
+    }
+    
+    </script>
+  
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<style>
+    #messages {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    padding: .25em;
+    word-wrap: break-word;
+   /* 
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 40, 100, 0.12);
+    border-radius: 3px;
+    */
+    font-weight: normal;
+    }
+    #messages>ul{
+        list-style-type: none;
+        margin-bottom: 0em;
+        padding-left: 2em;
+    }
+	#messages>ul.danger {
+        color: #dc3545!important;
+	}
+    #messages>ul.warning {
+        color: #ffc107!important;
+	}
+	#messages>ul.success {
+        color: #28a745!important;
+	}
+    #messages>ul.info {
+        color: #007bff!important;
+	}
+    #messages>ul.dark {
+    color: #343a40!important;
+    }
+	#messages>ul.light {
+    color: #6c757d!important;
+    }
+</style>
+<%- messages() %>

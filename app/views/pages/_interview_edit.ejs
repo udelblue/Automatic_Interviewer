@@ -1,0 +1,213 @@
+<% include ../partials/_header.ejs %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="/static/EasyAutocomplete/easy-autocomplete.css" rel="stylesheet">
+<script src="/static/EasyAutocomplete/jquery.easy-autocomplete.js"></script>
+  <body class="">
+    <div class="page">
+      <div class="page-main">
+        <% include ../partials/_topbar.ejs %>
+        <% include ../partials/_navbar.ejs %>
+        <div class="my-3 my-md-5">
+            <div class="container">
+          <div class="col-12">
+                <% include ../partials/_messages.ejs %>
+            <form action="/interview/edit/<%= interview._id %>" class="card">
+              <div class="card-header">
+                <h3 class="card-title">Create Interview</h3>
+                <div class="card-options">
+                    <a href='/interview/delete/<%= interview._id %>'  class="btn btn-secondary  btn-sm ml-2 " role="button" >Delete</a>
+                </div>
+              </div>
+              <div class="card-body">
+                  <div class="row">
+                      <div class="form-row mt-3">
+                          <div class=" form-group col-9">
+                              <label for="interview_title" class="mr-2">Title:</label>
+                            <input type="text" class="form-control" spellcheck="true"  value="<%= interview.name %>" name="interview_title"  />
+                            <span class="text-muted">The title of the interview, please include description.</span>
+                          </div>
+                          <div  class="interview_start_time form-group col-3 " >
+                              <label for="interview_start_time" class="mr-2">Interview Start Countdown:</label>
+                              <input type="number" class="form-control" value='10' name="interview_start_time" value="<%= interview.start_time %>" min="0" max="120" />
+                              <span class="text-muted">This is the count down time in seconds before the interview starts. Zero will allow the user to start interview on their own.</span>
+                          </div> 
+                     
+                      </div>
+                    </div>
+                    <hr class="mb-4">
+            
+                  <div class="row">
+                        <div class="col-lg-12  clearfix">
+                                <div class="float-left">
+                          <h4>Questions</h4>
+                                </div>
+                          <div class="btn-group mr-2 float-right">
+                              <button class="btn btn-sm btn-outline-secondary add_field_button">Add Question</button>
+                          </div>
+                      </div>
+                  </div>
+            
+                 <div class="row mt-3">
+                    <div class="question col">
+                        <label for="q">Question:</label>
+                        <input type="text"  class="form-control question-auto question-origin" name="q" spellcheck="true"  />
+                        <span class="text-muted">Question you would like to ask interviewees.</span>
+                
+                    </div>
+                                <div class="retry col-2">
+                                    <label for="r">Retry Attempts:</label>
+                                    <input type="number" class="form-control  retry-origin" name="r" value='0' min="0" max="10" />
+                                    <span class="text-muted">This is the number of retry attempts the user can try before submitting.</span>
+                                </div>
+                                <div class="start_time col-2">
+                                    <label for="c">Start Countdown:</label>
+                                    <input type="number"  class="form-control  countdown-origin" value='10' name="c" min="0" max="60" />
+                                    <span class="text-muted">This is the count down time in seconds before the question starts. Zero will allow the user to start of question on their own.</span>
+                                </div> 
+                                <div class="duration col-2">
+                                      <label for="d">Duration:</label>
+                                      <input type="number"  class="form-control duration-origin" value='30' name="d" min="0" max="3600" />
+                                      <span class="text-muted">Question Duration in seconds.</span>
+                                  </div> 
+                          
+                 </div>
+                 <div class="input_fields_wrap mt-3 mb-3">
+        
+        <%if (interview.questions.length > 0) { %>
+            <% interview.questions.forEach(function(question) { %>
+        
+                <div class="card mb-1" >
+                <div class="card-body">
+                        <h5 class="card-title">  <%= question.question %></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Duration: <%= question.duration %> Seconds</h6>
+                         <p class="card-text"><span> Retry attempts: <%= question.retry %> </span>-<span> Start countdown: <%= question.countdown %> Seconds </span></p>
+                        <input type="text"  class="invisible" name="question[]" value="<%= question.question %>"/>
+                        <input type="text" class="invisible"  name="retry[]" value="<%= question.retry %>"/>
+                        <input type="text"  class="invisible" name="countdown[]" value="<%= question.countdown %>"/>
+                        <input type="text"  class="invisible" name="duration[]" value="<%= question.duration %>"/>
+                        <input type="button" class="float-right removebtn btn btn-sm btn-outline-secondary" value="Remove" id="removebtn" />
+                        </div>
+                        </div>
+
+                <% }); %>
+        <% } %>
+
+                <!--end cardbody-->
+              </div>
+              <div class="card-footer text-right">
+                  <div class="d-flex">
+                    <a href="javascript:history.back()" class="btn btn-link">Cancel</a>
+                    <button id="btnSend" type="submit" class="btn btn-primary ml-auto">Send data</button>
+                  </div>
+                </div>
+              </form>
+          </div>     
+        </div>
+
+
+        </div>
+      </div>
+     <!-- <% include ../partials/_footer_header.ejs %>-->
+      <% include ../partials/_footer.ejs %>
+    </div>
+  </body>
+
+
+  <script type='text/javascript'>
+    $(document).ready(function() {
+    
+    var options = {
+        url: "/static/questions.json",
+        categories: [
+            {   //Brainteasers
+                listLocation: "Brainteasers",
+                header: "-- Brainteasers --"
+            },
+            {   //GettingStarted
+                listLocation: "GettingStarted",
+                header: "-- Getting started questions --"
+            },
+            {   //Basic
+                listLocation: "Basic",
+                header: "-- Basic interview questions --"
+            },
+            {   //Salary
+                listLocation: "Salary",
+                header: "-- Salary questions --"
+            },
+            {   //Behavioral
+                listLocation: "Behavioral",
+                header: "-- Behavioral interview questions --"
+            },
+              {   //Behavioral
+                listLocation: "Career",
+                header: "-- Career development questions --"
+            },
+            {   //AboutYou
+                listLocation: "AboutYou",
+                header: "-- More questions about you --"
+            }    
+        ],
+        list: {
+        match: {
+          enabled: true
+        }
+      }
+    };
+    
+    $(".question-auto").easyAutocomplete(options);
+    // end autocomplete 
+    $("form").submit(function(e) {
+        e.preventDefault(); // Prevents the page from refreshing
+        var $this = $(this); // `this` refers to the current form element
+        $.post(
+            $this.attr("action"), // Gets the URL to sent the post to
+            $this.serialize(), // Serializes form data in standard format
+            function(data) { /** code to handle response **/  
+                $(location).attr('href', '/interview/list') ;
+            },
+            "json" // The format the response should be in
+        );
+    });
+    // end formsubmittion
+    
+    var question_wrapper = $(".card");
+    var wrapper         = $(".input_fields_wrap"); 
+    var add_button      = $(".add_field_button");
+    var counter = 0;
+    $(add_button).click(function(e){
+        e.preventDefault();
+    
+            var question_origin = $(".question-origin").val();
+            var countdown_origin = $(".countdown-origin").val();
+            var retry_origin = $(".retry-origin").val();
+            var duration_origin = $(".duration-origin").val();
+    
+            var elems = '<div class="card mb-1" >'+
+        '<div class="card-body">' +
+        '<h5 class="card-title">' + question_origin +'</h5> ' +
+        '<h6 class="card-subtitle mb-2 text-muted">Duration: ' + duration_origin +' Seconds</h6>'+
+        ' <p class="card-text"><span> Retry attempts: ' + retry_origin +' </span>-<span> Start countdown: ' + countdown_origin +' Seconds </span></p>' +
+        '<input type="text" class="invisible"  name="question[]" value="' + question_origin +'"/>' +
+        '<input type="text" class="invisible"  name="retry[]" value="' + retry_origin +'"/>' +
+        '<input type="text"  class="invisible" name="countdown[]" value="' + countdown_origin +'"/>' +
+        '<input type="text"  class="invisible" name="duration[]" value="' + duration_origin +'" />' +
+        '<input type="button" class="float-right removebtn btn btn-sm btn-outline-secondary" value="Remove" id="removebtn" />'
+        '</div>'+
+        '</div>';
+    
+        $(wrapper).append(elems);
+        counter++;
+      
+    });
+    
+    $(document).on( "click", ".removebtn", function() {
+      $(this).parent().parent().remove(); 
+    
+    });
+    
+    
+    });
+    </script>
+
+</html>

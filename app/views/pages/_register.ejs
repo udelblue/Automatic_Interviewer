@@ -1,0 +1,60 @@
+<% include ../partials/_header.ejs %>
+<body class="">
+    <div class="page">
+      <div class="page-single">
+        <div class="container">
+          <div class="row">
+            <div class="col col-login mx-auto">
+              <div class="text-center mb-6">
+                <img src="/assets/brand/logo.svg" class="h-6" alt="">
+              </div>
+              <% include ../partials/_messages.ejs %>
+              <form class="card" action="" method="post">
+                <div class="card-body p-6">
+                  <div class="card-title">Create new account</div>
+                  <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" tabindex="1" placeholder="Enter username"   autofocus >
+                  </div>
+              
+                  <div class="form-group">
+                    <label class="form-label">First name</label>
+                    <input type="text" name="firstname" class="form-control" tabindex="2" placeholder="Enter first name">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Last name</label>
+                    <input type="text" name="lastname" class="form-control" tabindex="3" placeholder="Enter last name">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Email address</label>
+                    <input type="email" name="email" class="form-control" tabindex="4" placeholder="Enter email">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" tabindex="5" autocomplete="false" placeholder="Password">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Password Confirm</label>
+                    <input type="password" name="password2" class="form-control" tabindex="6" autocomplete="false" placeholder="Password confirm">
+                  </div>
+                  <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input"   />
+                      <span class="custom-control-label">Agree the <a href="#">terms and policy</a></span>
+                    </label>
+                  </div>
+                  <div class="form-footer">
+                    <button type="submit" tabindex="6" class="btn btn-primary btn-block">Create new account</button>
+                  </div>
+                </div>
+              </form>
+              <div class="text-center text-muted">
+                Already have account? <a href="/users/login">Sign in</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

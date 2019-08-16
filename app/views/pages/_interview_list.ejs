@@ -1,0 +1,142 @@
+<% include ../partials/_header.ejs %>
+  <body class="">
+    <div class="page">
+      <div class="page-main">
+    
+      
+        <% include ../partials/_topbar.ejs %>
+        <% include ../partials/_navbar.ejs %>
+        <div class="my-3 my-md-5">
+          <div class="container">
+          <% include ../partials/_messages.ejs %>
+
+          <!--
+          <div class="col-12">
+          <div class="row row-cards">
+              <div class="col-sm-6 col-lg-3">
+                <div class="card p-3">
+                  <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-red mr-3">
+                      <i class="fe fe-users"></i>
+                    </span>
+                    <div>
+                      <h4 class="m-0"><a href="javascript:void(0)">1,352 <small>Members</small></a></h4>
+                      <small class="text-muted">163 registered today</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6 col-lg-3">
+                <div class="card p-3">
+                  <div class="d-flex align-items-center">
+                    <span class="stamp stamp-md bg-yellow mr-3">
+                      <i class="fe fe-message-square"></i>
+                    </span>
+                    <div>
+                      <h4 class="m-0"><a href="javascript:void(0)">132 <small>Comments</small></a></h4>
+                      <small class="text-muted">16 waiting</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-sm-6 col-lg-3">
+                  <div class="card p-3">
+                    <div class="d-flex align-items-center">
+                      <span class="stamp stamp-md bg-green mr-3">
+                        <i class="fe fe-message-square"></i>
+                      </span>
+                      <div>
+                        <h4 class="m-0"><a href="javascript:void(0)">132 <small>Interviews</small></a></h4>
+                        <small class="text-muted">16 waiting</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card p-3">
+                      <div class="d-flex align-items-center">
+                        <span class="stamp stamp-md bg-blue mr-3">
+                          <i class="fa fa-users"></i>
+                        </span>
+                        <div>
+                          <h4 class="m-0"><a href="javascript:void(0)">132 <small>Responses</small></a></h4>
+                          <small class="text-muted">16 waiting</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+        </div>
+      </div>
+
+-->
+
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Interviews</h3>
+                    <div class="card-options">
+                        <a href="/interview/create" class="btn btn-primary btn-sm">Create</a>
+                    </div>
+                  </div>
+           
+            <div class="table-responsive">
+              <table class="table card-table table-vcenter text-nowrap">
+                <thead>
+                  <tr>
+                      <th class="w-1">No.</th>
+                      <th>Title</th>
+                      <th>Created</th>
+                      <th>Status</th>
+               
+                    <th></th>
+                  
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% if(interviews && interviews.length > 0) { %>
+                    
+                    <% interviews.forEach(function(interview) { %>
+                    
+                      <tr>
+                          <td> <%= interview._id %></td>
+                          <td> <%= interview.name %></td>
+                          <td> <%= moment().format("dddd, MMMM Do YYYY") %> </td>
+                          <td>
+                              <span class="status-icon bg-success"></span> Active
+                            </td>
+    
+                          <td><a href='/interview/invite/<%= interview._id %>'  class="btn btn-secondary btn-sm  " role="button">Invite Candidates</a></td>
+                          <td><a href='/response/interview/<%= interview._id %>'  class="btn btn-secondary btn-sm " role="button">Candidate Responses</a></td>
+                          <td>
+                          <a class="icon" href="/interview/edit/<%= interview._id %>">
+                              <i class="fe fe-edit"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      <% }); %>
+            
+                      <% }; %>
+
+                </tbody>
+              </table>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        </div>
+      </div>
+   
+      <% include ../partials/_footer.ejs %>
+    </div>
+  </body>
+</html>

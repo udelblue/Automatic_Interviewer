@@ -1,0 +1,9 @@
+node_modules
+build
+assets/*
+npm-debug.log
+.env
+.DS_Store
+isolate*
+*.mp4
+*.mp3

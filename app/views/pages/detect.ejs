@@ -1,0 +1,63 @@
+
+ <% include ../partials/_header.ejs %>
+ <script src="/static/DetectRTC.js"></script>
+ <body class="">
+   <div class="page">
+     <div class="page-main">
+       <% include ../partials/_topbar.ejs %>
+       <% include ../partials/_navbar.ejs %>
+       <div class="my-3 my-md-5">
+         <div class="container">
+
+            <h4>Detect</h4>
+
+            <script>
+
+
+DetectRTC.load(function() {
+    if(DetectRTC.hasWebcam === false || DetectRTC.hasMicrophone === false){
+      window.location.replace("/interview/unable");
+    }else{
+     
+    }});
+
+
+              DetectRTC.load(function() {
+              if(DetectRTC.hasWebcam === false){
+                console.log("no cam")
+              }else{
+                console.log("cam")
+              }
+              if(DetectRTC.isWebsiteHasWebcamPermissions === false){
+                console.log("no permission")
+              }else{
+                console.log("permission")
+              }
+              if(DetectRTC.hasMicrophone === false){
+                console.log("no mic")
+              }else{
+                console.log("mic")
+              }
+              if(DetectRTC.hasSpeakers === false){
+                console.log("no speakers")
+              }else{
+                console.log ("speakers")
+              }
+
+              // DetectRTC.osName
+                // DetectRTC.osVersion
+              // DetectRTC.isWebsiteHasMicrophonePermissions
+             // console.log(DetectRTC.videoInputDevices);
+            });
+            </script>
+
+
+
+
+</div> 
+</div>
+</div>
+<% include ../partials/_footer.ejs %>
+</div>
+</body>
+</html>
